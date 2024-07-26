@@ -46,24 +46,14 @@ class User extends Authenticatable /* implements MustVerifyEmail */
         ];
     }
 
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'user_company', 'user_id', 'company_id');
+    }
+
     public function groups()
     {
-        return $this->belongsToMany(Group::class, 'user_group');
-    }
-
-    public function company()
-    {
-        return $this->belongsToMany(Company::class, 'user_company');
-    }
-
-    public function hasPermission($permission)
-    {
-        foreach ($this->groups as $group) {
-            if ($group->permissions->contains('name', $permission)) {
-                return true;
-            }
-        }
-        return false;
+        return $this->belongsToMany(Group::class, 'user_group')->withTimestamps();
     }
 
 }

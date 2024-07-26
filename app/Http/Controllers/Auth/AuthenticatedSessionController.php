@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Redirect;
+
 
 class AuthenticatedSessionController extends Controller
 {
@@ -22,13 +24,29 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->authenticate();
+        // Validação do login
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        $request->session()->regenerate();
+        // Tentativa de autenticação
+        if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+            // Redirecionar baseado no grupo
+            if (Auth::user()->can('is_admin')) {
+                return Redirect::intended('/dashboard');
+            }
+
+            return Redirect::intended('/candidato');
+        }
+
+        return back()->withErrors([
+            'email' => 'As credenciais fornecidas não coincidem com nossos registros.',
+        ]);
     }
 
     /**

@@ -20,9 +20,4 @@ class ModulePermission extends Model
     {
         return $this->belongsTo(Permission::class);
     }
-
-    public function groups()
-    {
-        return $this->belongsToMany(Group::class, 'group_permission');
-    }
 }

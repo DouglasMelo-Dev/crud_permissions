@@ -17,9 +17,6 @@ class UserController extends Controller
 
     public function index()
     {
-        /* $users = $this->user->with('companies')->get();
-        return view('users', ['users' => $users]); */
-
         $users = User::with(['companies', 'groups.permissions'])->get();
         return view('users', ['users' => $users]);
     }

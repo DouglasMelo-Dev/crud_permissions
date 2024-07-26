@@ -4,10 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Permissions;
-use App\Models\Company;
-use App\Models\ModulePermission;
-
 
 class Group extends Model
 {
@@ -15,19 +11,19 @@ class Group extends Model
 
     protected $fillable = ['name', 'company_id'];
 
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'user_group');
-    }
-
-    public function permissions()
-    {
-        return $this->belongsToMany(ModulePermission::class, 'group_permission');
-    }
-
     public function company()
     {
         return $this->belongsTo(Company::class);
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_group')->withTimestamps();
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'group_permission', 'group_id', 'module_permission_id')
+                    ->withTimestamps();
+    }
 }

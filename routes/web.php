@@ -5,35 +5,46 @@ use Illuminate\Support\Facades\Route;
 use App\http\Controllers\UserController;
 use App\http\Controllers\HomeController;
 
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-// Rotas sem login:
+
+
+// Rotas PUBLICAS
 Route::get('/', function () {return view('welcome');});
 // Route::get('/vagas')
 // Route::get('/notícias')
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-
-Route::get('/users', [UserController::class, 'index'])->name('users');
-Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-Route::post('/users', [UserController::class, 'store'])->name('users.store');
-Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
-Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
 
 // Apenas a pessoa autenticada pode acessar:
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/candidato', function () {
+        return view('user/candidato');
+    })->middleware(['auth', 'verified'])->name('candidato');
+
+
+// Route::middleware('auth) && (is_admin)
+    Route::get('/users', [UserController::class, 'index'])->name('users');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/colaboradores', function () {
+        return view('colaboradores');
+    })->middleware(['auth', 'verified'])->name('colaboradores');
 });
 
-// vagas
-// currículo
-//
 
 
 require __DIR__.'/auth.php';
