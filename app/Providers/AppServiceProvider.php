@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Permission;
 use App\Models\User;
+use App\Policies\PermissionPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Gate;
@@ -10,9 +13,12 @@ use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
+
+    protected $policies = [
+        User::class => UserPolicy::class,
+        Permission::class => PermissionPolicy::class,
+    ];
+
     public function register(): void
     {
         //
@@ -20,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        /* $this->registerPolicies(); */
+
         Schema::defaultStringLength(191);
 
         Gate::define('pode_ver', function (User $user)
@@ -31,5 +39,9 @@ class AppServiceProvider extends ServiceProvider
             // Verificar se o usuário pertence ao grupo 'admin'
             return $user->groups()->where('name', 'admin')->exists();
         });
+
+        // Registrar as regras de permissão
+        Gate::define('view', [PermissionPolicy::class, 'view']);
+        Gate::define('create', [PermissionPolicy::class, 'create']);
     }
 }

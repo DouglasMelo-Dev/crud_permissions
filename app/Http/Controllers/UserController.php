@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Company;
-
+use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     public readonly User $user;
@@ -17,7 +17,16 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with(['companies', 'groups.permissions'])->get();
+        // Obtendo o usuário logado
+        $loggedUser = Auth::user();
+
+        // Carregando os usuários que pertencem à mesma empresa do usuário logado
+        $users = User::with(['companies', 'groups.permissions'])
+            ->whereHas('companies', function ($query) use ($loggedUser) {
+                $query->whereIn('companies.id', $loggedUser->companies->pluck('id'));
+            })
+            ->get();
+
         return view('users', ['users' => $users]);
     }
 
@@ -33,16 +42,19 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        /* dd('teste');
-        $users = User::all();
-        return view('index', compact('users')); */
+        // Obtendo o usuário logado
+        $loggedUser = Auth::user();
 
-        $user = User::with(['companies', 'groups.permissions'])->findOrFail($id);
+        // Carregando o usuário específico se ele pertencer à mesma empresa do usuário logado
+        $user = User::with(['companies', 'groups.permissions'])
+            ->where('id', $id)
+            ->whereHas('companies', function ($query) use ($loggedUser) {
+                $query->whereIn('companies.id', $loggedUser->companies->pluck('id'));
+            })
+            ->firstOrFail();
+
         return view('user_show', ['user' => $user]);
     }
 

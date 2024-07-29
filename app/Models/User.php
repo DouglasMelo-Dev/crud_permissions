@@ -33,6 +33,14 @@ class User extends Authenticatable /* implements MustVerifyEmail */
         'remember_token',
     ];
 
+    public function hasPermission(string $permission): bool
+    {
+        return $this->groups()
+            ->whereHas('permissions', function($query) use ($permission) {
+                $query->where('description', $permission);
+            })->exists();
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -48,7 +56,7 @@ class User extends Authenticatable /* implements MustVerifyEmail */
 
     public function companies()
     {
-        return $this->belongsToMany(Company::class, 'user_company', 'user_id', 'company_id');
+        return $this->belongsToMany(Company::class, 'user_company');
     }
 
     public function groups()

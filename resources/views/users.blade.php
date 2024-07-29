@@ -4,9 +4,9 @@
 
 @section('content')
 
-<h1 class="container text-center mt-4 mb-4">Lista Usuarios
+<h1 class="container text-center mt-4 mb-4">Lista de Colaboradores</h1>
+<p class="container text-center mt-4 mb-4">Ajuste os poderes de acesso de cada colaborador abaixo:</p>
 
-</h1>
 @section('content')
     <div class="container mb-5 mt-5" style="max-width: 1200px; margin: 0 auto;">
         <table class="table">

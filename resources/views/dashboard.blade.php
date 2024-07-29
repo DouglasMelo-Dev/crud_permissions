@@ -14,8 +14,14 @@
                     {{ $id = Auth::id() }}<br>
                     @if ($userAdmin = Auth::user()->groups()->where('name', 'admin')->exists() )
                         Ted é admin!!
-                    @endif
+                    @endif<br>
                     {{-- {{  $userAdmin = Auth::user()->groups()->where('name', 'admin')->exists() }} --}}
+
+                    @forelse (Auth::user()->companies as $company)
+                        Nome da empresa: {{ $company->name }}<br>
+                    @empty
+                        Nenhuma empresa associada.<br>
+    @endforelse
 
                 </div>
             </div>
@@ -38,7 +44,7 @@
             @endcan
         </div>
     </div>
-
+    {{-- @can('view')
     <div class="py-2">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -50,4 +56,5 @@
             </div>
         </div>
     </div>
+    @endcan --}}
 </x-app-layout>
