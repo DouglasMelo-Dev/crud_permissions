@@ -7,8 +7,6 @@ use App\http\Controllers\HomeController;
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-
-
 // Rotas PUBLICAS
 Route::get('/', function () {return view('welcome');});
 // Route::get('/vagas')
@@ -17,8 +15,6 @@ Route::get('/', function () {return view('welcome');});
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-
 
 // Apenas a pessoa autenticada pode acessar:
 Route::middleware('auth')->group(function () {
@@ -30,8 +26,6 @@ Route::middleware('auth')->group(function () {
         return view('user/candidato');
     })->middleware(['auth', 'verified'])->name('candidato');
 
-
-// Route::middleware('auth) && (is_admin)
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
@@ -40,14 +34,25 @@ Route::middleware('auth')->group(function () {
     Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
+    Route::get('/groups-permissions', [UserController::class, 'showGroupsAndPermissions'])->name('groups.permissions');
+
+    Route::get('/from-company', [UserController::class, 'showUsersFromSameCompany'])->name('users.from_company');
+
     Route::get('/colaboradores', function () {
         return view('colaboradores');
     })->middleware(['auth', 'verified'])->name('colaboradores');
+
 });
 
 
-
 require __DIR__.'/auth.php';
+
+
+
+
+
+
+
 
 /*
 

@@ -6,9 +6,10 @@ use App\Models\Permission;
 use App\Models\User;
 use App\Policies\PermissionPolicy;
 use App\Policies\UserPolicy;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Gate;
+
 
 
 class AppServiceProvider extends ServiceProvider
@@ -26,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        /* $this->registerPolicies(); */
+        $this->registerPolicies();
 
         Schema::defaultStringLength(191);
 
@@ -41,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Registrar as regras de permissão
-        Gate::define('view', [PermissionPolicy::class, 'view']);
-        Gate::define('create', [PermissionPolicy::class, 'create']);
+        Gate::define('view', [UserPolicy::class, 'view']);
+        Gate::define('create', [UserPolicy::class, 'create']);
     }
 }

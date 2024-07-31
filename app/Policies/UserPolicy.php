@@ -4,12 +4,12 @@ namespace App\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\HandlesAuthorization; // incluir esta linha em qualquer nova policies
 
 
 class UserPolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization; // incluir esta linha em qualquer nova policies
 
     public function viewAny(User $user)
     {
@@ -18,6 +18,7 @@ class UserPolicy
 
     public function view(User $user, User $model)
     {
+        //dd($user->id);//teste para permitir que o usuario veja seu proprio perfil ou se for admin
         return $user->id === $model->id || $user->hasPermission('view_user');
     }
 
@@ -28,6 +29,7 @@ class UserPolicy
 
     public function update(User $user, User $model)
     {
+        // Permitir que o usuário atualize seu próprio perfil ou se for admin
         return $user->id === $model->id || $user->hasPermission('update_user');
     }
 
